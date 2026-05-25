@@ -7,6 +7,7 @@ import cors from "cors";
 import { createServer } from "node:http";
 import { env } from "./config/env";
 import { connectMongo } from "./db/mongo";
+import { isAllowedOrigin } from "./config/cors";
 import { initIo } from "./ws/io";
 import { startGenerationBridge } from "./ws/bridge";
 import { getJobState } from "./queue/jobState";
@@ -17,7 +18,7 @@ async function main(): Promise<void> {
   await connectMongo();
 
   const app = express();
-  app.use(cors({ origin: env.webOrigin }));
+  app.use(cors({ origin: (o, cb) => cb(null, isAllowedOrigin(o)) }));
   app.use(express.json({ limit: "1mb" }));
 
   app.get("/health", (_req, res) => res.json({ ok: true }));

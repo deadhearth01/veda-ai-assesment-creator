@@ -2,14 +2,14 @@ import { Server } from "socket.io";
 import type { Server as HttpServer } from "node:http";
 import { createAdapter } from "@socket.io/redis-adapter";
 import { createRedis } from "../db/redis";
-import { env } from "../config/env";
+import { isAllowedOrigin } from "../config/cors";
 import { WS_EVENTS } from "@vedaai/shared";
 
 let io: Server | null = null;
 
 export function initIo(httpServer: HttpServer): Server {
   io = new Server(httpServer, {
-    cors: { origin: env.webOrigin, methods: ["GET", "POST"] },
+    cors: { origin: (o, cb) => cb(null, isAllowedOrigin(o)), methods: ["GET", "POST"] },
   });
 
   // Redis adapter → any api instance can emit to a client's room (multi-instance safe).

@@ -6,6 +6,10 @@
 
 Next.js · TypeScript · Express · MongoDB · Redis · BullMQ · WebSockets · Google Gemini
 
+**Live:** https://vedaai-web-439420707140.asia-south1.run.app
+&nbsp;·&nbsp; **API:** https://vedaai-api-439420707140.asia-south1.run.app
+&nbsp;·&nbsp; deployed on Google Cloud Run (asia‑south1)
+
 </div>
 
 ---
