@@ -82,9 +82,11 @@ router.get("/:id/pdf", async (req, res, next) => {
     if (!paperDoc) return res.status(404).json({ error: "No paper generated yet" });
 
     const base = (doc.title || doc.subject || "question-paper").replace(/[^a-z0-9]+/gi, "-");
-    const fileName = `${base}${version ? `-v${version}` : ""}.pdf`;
+    const suffix = includeAnswerKey ? "-with-answer-key" : "";
+    const fileName = `${base}${version ? `-v${version}` : ""}${suffix}.pdf`;
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.setHeader("Cache-Control", "no-store");
     streamPaperPdf(paperToShape(paperDoc), res, { includeAnswerKey });
   } catch (err) {
     return next(err);

@@ -71,6 +71,7 @@ export function PDF_URL(
   const p = new URLSearchParams();
   if (opts?.version) p.set("version", String(opts.version));
   if (opts?.answerKey) p.set("answerKey", "true");
-  const q = p.toString();
-  return `${API}/api/assignments/${id}/pdf${q ? `?${q}` : ""}`;
+  // cache-buster — guarantees a fresh PDF (no browser/CDN reuse)
+  p.set("t", String(Date.now()));
+  return `${API}/api/assignments/${id}/pdf?${p.toString()}`;
 }
