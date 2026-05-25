@@ -81,9 +81,11 @@ router.get("/:id/pdf", async (req, res, next) => {
       : await QuestionPaper.findOne({ assignmentId: doc.id }).sort({ version: -1 });
     if (!paperDoc) return res.status(404).json({ error: "No paper generated yet" });
 
-    const base = (doc.title || doc.subject || "question-paper").replace(/[^a-z0-9]+/gi, "-");
-    const suffix = includeAnswerKey ? "-with-answer-key" : "";
-    const fileName = `${base}${version ? `-v${version}` : ""}${suffix}.pdf`;
+    const base = (doc.title || doc.subject || "Assignment").replace(/[^a-z0-9 ]+/gi, "").trim() || "Assignment";
+    const kind = includeAnswerKey ? "Question Paper + Key" : "Only Question Paper";
+    const v = version ? ` v${version}` : "";
+    // Content-Disposition needs ASCII; quoting handles the spaces.
+    const fileName = `${base}${v} - ${kind}.pdf`;
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
     res.setHeader("Cache-Control", "no-store");
